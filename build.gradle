@@ -6,6 +6,7 @@ plugins {
 
 group = 'com.dyprj.mitd'
 version = '0.0.1-SNAPSHOT'
+description ='Moon in the Dark Operating System'
 
 java {
     sourceCompatibility = '17'
@@ -22,12 +23,34 @@ repositories {
 }
 
 dependencies {
+    // spring boot starter
     implementation 'org.springframework.boot:spring-boot-starter-web'
-
-    compileOnly 'org.projectlombok:lombok'
-    annotationProcessor 'org.projectlombok:lombok'
-
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    implementation 'org.springframework.boot:spring-boot-starter-validation'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
+
+    // spring security
+    implementation 'org.springframework.boot:spring-boot-starter-security'
+
+    // jwt
+    implementation 'io.jsonwebtoken:jjwt-api:0.11.5'
+    runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.11.5'
+    runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.11.5'
+
+    // modelmapper
+    implementation 'org.modelmapper:modelmapper:3.1.0'
+
+    // lombok
+    compileOnly 'org.projectlombok:lombok:1.18.30'
+    annotationProcessor 'org.projectlombok:lombok:1.18.30'
+    testCompileOnly 'org.projectlombok:lombok:1.18.30'
+    testAnnotationProcessor 'org.projectlombok:lombok:1.18.30'
+
+    // hibernate
+    implementation 'org.hibernate:hibernate-core:6.3.1.Final'
+
+    // postgresql
+    runtimeOnly 'org.postgresql:postgresql:42.2.14'
 }
 
 tasks.named('test') {

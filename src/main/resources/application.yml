@@ -1,0 +1,24 @@
+server:
+  port: 8080
+
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/mitdos
+    username: dy
+    password: 12134568
+
+  jpa:
+    hibernate:
+      ddl-auto: none
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        format_sql: false
+        default_batch_fetch_size: 100
+    show-sql: true
+
+jwt:
+  secret: ee47b4094ba54d95ba6b9a77a42cf4ea0329f2e1c3018d0517076358a1b7d0ba # openssl rand -hex 32
+  access-token-validity-in-seconds: 1800 # 30분
+  refresh-token-validity-in-seconds: 86400 # 1일
+  issuer: dy-dev
