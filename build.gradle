@@ -6,7 +6,7 @@ plugins {
 
 group = 'com.dyprj.mitd'
 version = '0.0.1-SNAPSHOT'
-description ='Moon in the Dark Operating System'
+description ='DY-DEV System'
 
 java {
     sourceCompatibility = '17'
