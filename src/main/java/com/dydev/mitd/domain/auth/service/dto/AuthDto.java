@@ -1,6 +1,7 @@
 package com.dydev.mitd.domain.auth.service.dto;
 
 import com.dydev.mitd.common.constants.AuthProperties;
+import com.dydev.mitd.common.utils.AESUtils;
 import jakarta.validation.constraints.NotEmpty;
 import lombok.Builder;
 import lombok.Getter;
@@ -24,6 +25,10 @@ public class AuthDto {
 
         private String accessToken;
         private String refreshToken;
+
+        public void encryptRefreshToken() {
+            refreshToken = AESUtils.encrypt(refreshToken);
+        }
     }
 
 }

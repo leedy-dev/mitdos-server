@@ -13,10 +13,26 @@ spring:
     properties:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
-        format_sql: false
+        format_sql: true
         default_batch_fetch_size: 100
     show-sql: true
 
+# logging
+logging:
+  level:
+    root: INFO
+    com:
+      dydev.mitd: DEBUG
+    org:
+      springframework: DEBUG
+      hibernate:
+        SQL: DEBUG
+        type:
+          descriptor:
+            sql:
+              BasicBinder: TRACE
+
+# jwt
 jwt:
   secret: ee47b4094ba54d95ba6b9a77a42cf4ea0329f2e1c3018d0517076358a1b7d0ba # openssl rand -hex 32
   access-token-validity-in-seconds: 1800 # 30분

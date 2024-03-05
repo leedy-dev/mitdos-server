@@ -1,5 +1,6 @@
 package com.dydev.mitd.domain.auth.controller;
 
+import com.dydev.mitd.common.constants.AuthProperties;
 import com.dydev.mitd.domain.auth.service.AuthService;
 import com.dydev.mitd.common.constants.CommonApiUrls;
 import com.dydev.mitd.common.provider.JwtProvider;
@@ -31,8 +32,12 @@ public class AuthController {
     public ResponseEntity<AuthDto.Token> signIn(@Valid @RequestBody AuthDto.SignIn authDto) {
         AuthDto.Token tokenDto = authService.signIn(authDto);
 
+        // encrypt refresh token
+        tokenDto.encryptRefreshToken();
+
         HttpHeaders headers = new HttpHeaders();
         headers.setBearerAuth(tokenDto.getAccessToken());
+        headers.set(AuthProperties.HEADER_PREFIX_RT, tokenDto.getRefreshToken());
         headers.setContentType(MediaType.APPLICATION_JSON);
 
         return new ResponseEntity<>(tokenDto, headers, HttpStatus.OK);
@@ -49,13 +54,13 @@ public class AuthController {
     }
 
     @PostMapping("/reissue")
-    public ResponseEntity<Void> reissue(HttpServletRequest request, HttpServletResponse response) {
+    public ResponseEntity<String> reissue(HttpServletRequest request, HttpServletResponse response) {
         String encryptedRefreshToken = jwtProvider.resolveRefreshToken(request);
         String newAccessToken = authService.reissueAccessToken(encryptedRefreshToken);
 
         jwtProvider.setAccessTokenHeader(newAccessToken, response);
 
-        return new ResponseEntity<>(HttpStatus.OK);
+        return new ResponseEntity<>(newAccessToken, HttpStatus.OK);
     }
 
     @PostMapping("/test")
