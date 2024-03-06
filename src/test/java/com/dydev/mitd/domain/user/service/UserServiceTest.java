@@ -1,7 +1,7 @@
 package com.dydev.mitd.domain.user.service;
 
 import com.dydev.mitd.domain.user.entity.User;
-import com.dydev.mitd.domain.user.enums.UserType;
+import com.dydev.mitd.domain.user.enums.UserTypes;
 import com.dydev.mitd.domain.user.service.dto.UserRequestDto;
 import com.dydev.mitd.domain.user.service.dto.UserResponseDto;
 import org.junit.jupiter.api.AfterEach;
@@ -26,7 +26,7 @@ class UserServiceTest {
     private static final User TEST_USER = User.builder()
             .userId(TEST_USER_ID)
             .password("1234")
-            .dtype(UserType.USER.getValue())
+            .dtype(UserTypes.USER.getValue())
             .name("김테스트")
             .email("test01@test.com")
             .build();

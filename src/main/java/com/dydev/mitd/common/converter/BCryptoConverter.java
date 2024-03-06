@@ -2,16 +2,12 @@ package com.dydev.mitd.common.converter;
 
 import jakarta.persistence.AttributeConverter;
 import jakarta.persistence.Convert;
-import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.Optional;
 
 @Convert
-@RequiredArgsConstructor
-public class BCryptoConverter implements AttributeConverter<String, String> {
-
-    private final PasswordEncoder passwordEncoder;
+public record BCryptoConverter(PasswordEncoder passwordEncoder) implements AttributeConverter<String, String> {
 
     @Override
     public String convertToDatabaseColumn(String attribute) {

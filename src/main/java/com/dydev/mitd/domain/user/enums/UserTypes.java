@@ -4,14 +4,14 @@ import com.dydev.mitd.common.enums.EnumMapperType;
 import com.dydev.mitd.common.annotation.EnumFindable;
 
 @EnumFindable
-public enum UserType implements EnumMapperType {
+public enum UserTypes implements EnumMapperType {
     SUPER("SUPER"),
     ADMIN("ADMIN"),
     USER("USER");
 
     private String value;
 
-    UserType(String value) {
+    UserTypes(String value) {
         this.value = value;
     }
 

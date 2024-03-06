@@ -19,8 +19,12 @@ public class UserRequestDto {
     private String dtype;
 
     @NotEmpty
-    @Size(max = 200)
+    @Size(max = 10)
     private String name;
+
+    @NotEmpty
+    @Size(max = 10)
+    private String nickname;
 
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     @NotEmpty

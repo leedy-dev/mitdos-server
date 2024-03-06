@@ -22,7 +22,7 @@ import java.util.Set;
 @Component
 public class ValidCheckInterceptor {
 
-    @Around("execution(* com.dyprj.mitd..*.*Controller.*(..))")
+    @Around("execution(* com.dydev.mitd..*.*Controller.*(..))")
     public Object anyMethod(ProceedingJoinPoint joinPoint) throws Throwable {
         Object[] objs = joinPoint.getArgs();
         for(Object obj : objs){

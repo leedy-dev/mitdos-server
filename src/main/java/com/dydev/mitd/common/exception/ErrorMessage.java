@@ -10,7 +10,8 @@ public enum ErrorMessage implements ErrorMessageIF {
     TOKEN_WITHOUT_CREDENTIAL(400, "Token without credential"),
 
     // TOKEN
-    REFRESH_TOKEN_NOT_FOUND(400, "Refresh Token not found"),
+    ACCESS_TOKEN_NOT_FOUND(400, "Access token not found"),
+    REFRESH_TOKEN_NOT_FOUND(400, "Refresh token not found"),
     INVALID_REFRESH_TOKEN(400, "Invalid refresh token"),
     EXPIRED_TOKEN_REFRESH_TOKEN(400, "Expired refresh token"),
 

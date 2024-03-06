@@ -5,9 +5,9 @@ import com.dydev.mitd.domain.auth.service.dto.AuthDto;
 
 public interface AuthService {
 
-    AuthDto.Token signIn(AuthDto.SignIn authDto);
+    AuthDto.TokenWithRefresh signIn(AuthDto.SignIn authDto);
 
-    void signOut(String encryptedRefreshToken, String accessToken);
+    void signOut(String accessToken);
 
     void signUp(UserRequestDto.Join userRequestDto);
 

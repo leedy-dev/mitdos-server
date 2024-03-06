@@ -3,6 +3,7 @@ package com.dydev.mitd.domain.user.service.impl;
 import com.dydev.mitd.common.exception.ApiException;
 import com.dydev.mitd.common.exception.ErrorMessage;
 import com.dydev.mitd.domain.user.entity.User;
+import com.dydev.mitd.domain.user.enums.UserTypes;
 import com.dydev.mitd.domain.user.repository.UserRepository;
 import com.dydev.mitd.domain.user.service.UserService;
 import com.dydev.mitd.domain.user.service.UserTokenService;
@@ -20,6 +21,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -36,12 +38,14 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     private final ModelMapper modelMapper;
 
     @Override
-    public UserResponseDto getUserById(String userId) {
+    public User getUserEntityById(String userId) {
         Optional<User> userOp = userRepository.findById(userId);
+        return userOp.orElseThrow(() -> new ApiException(userId, ErrorMessage.USER_NOT_FOUND));
+    }
 
-        return modelMapper.map(
-                userOp.orElseThrow(() -> new ApiException(userId, ErrorMessage.USER_NOT_FOUND)),
-                UserResponseDto.class);
+    @Override
+    public UserResponseDto getUserById(String userId) {
+        return modelMapper.map(getUserEntityById(userId), UserResponseDto.class);
     }
 
     @Override
@@ -50,9 +54,9 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
         return new PageImpl<>(userList.stream()
                 .map(user -> modelMapper.map(user, UserResponseDto.class))
-                .collect(Collectors.toList())
-                , userList.getPageable()
-                , userList.getTotalElements());
+                .collect(Collectors.toList()),
+                userList.getPageable(),
+                userList.getTotalElements());
     }
 
     @Override
@@ -65,9 +69,27 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
         if (userOp.isPresent()) throw new ApiException(userId, ErrorMessage.DUPLICATE_USER_ID);
 
-        User user = modelMapper.map(userRequestDto, User.class);
+        User user = User.builder()
+                // user info
+                .userId(userRequestDto.getUserId())
+                .dtype(UserTypes.USER.getValue())
+                .password(userRequestDto.getPassword())
+                .name(userRequestDto.getName())
+                .nickname(userRequestDto.getNickname())
+                .email(userRequestDto.getEmail())
+                .passwordChangeDateTime(LocalDateTime.now())
 
-        return modelMapper.map(userRepository.save(user), UserResponseDto.class);
+                // credential
+                .accountExpired(false)
+                .credentialExpired(false)
+                .locked(false)
+                .enabled(true)
+
+                .build();
+
+        return modelMapper.map(
+                userRepository.save(user),
+                UserResponseDto.class);
     }
 
     @Override

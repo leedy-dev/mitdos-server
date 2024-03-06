@@ -6,7 +6,7 @@ import java.util.Optional;
 
 public interface UserTokenService {
 
-    Optional<UserToken> getUserTokenByUserId(String userId);
+    Optional<UserToken> getUserTokenOpByUserId(String userId);
 
     void updateUserToken(String userId, String refreshToken);
 

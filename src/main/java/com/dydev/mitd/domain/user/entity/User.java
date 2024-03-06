@@ -20,7 +20,8 @@ import java.util.Collections;
 @EqualsAndHashCode(callSuper = false)
 @Entity
 @Table(
-        name = "tb_user"
+        name = "tb_user",
+        uniqueConstraints = @UniqueConstraint(name = "uk_user", columnNames = "email")
 )
 @DiscriminatorColumn
 public class User extends BaseCUEntity implements UserDetails {
@@ -34,11 +35,14 @@ public class User extends BaseCUEntity implements UserDetails {
     @Column(nullable = false, length = 200)
     private String name;
 
+    @Column(nullable = false, length = 10)
+    private String nickname;
+
     @Convert(converter = BCryptoConverter.class)
     @Column(nullable = false, length = 200)
     private String password;
 
-    @Column(nullable = false, length = 200)
+    @Column(nullable = false, length = 200, unique = true)
     private String email;
 
     @Column(columnDefinition = "timestamp default current_timestamp")

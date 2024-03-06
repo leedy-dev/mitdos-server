@@ -13,6 +13,7 @@ import com.dydev.mitd.domain.user.service.UserService;
 import com.dydev.mitd.domain.user.service.UserTokenService;
 import io.jsonwebtoken.Claims;
 import lombok.RequiredArgsConstructor;
+import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -26,14 +27,15 @@ public class AuthServiceImpl implements AuthService {
     private final JwtProvider jwtProvider;
     private final UserService userService;
     private final UserTokenService userTokenService;
+    private final ModelMapper modelMapper;
 
     @Override
     @Transactional
-    public AuthDto.Token signIn(AuthDto.SignIn authDto) {
+    public AuthDto.TokenWithRefresh signIn(AuthDto.SignIn authDto) {
         String userId = authDto.getUserId();
 
         // 토큰 생성
-        AuthDto.Token tokenDto = jwtProvider.generateToken(userId);
+        AuthDto.TokenWithRefresh tokenDto = jwtProvider.generateToken(userId);
 
         // 사용자 정보 업데이트
         userService.updateUserWithSignIn(userId, tokenDto.getRefreshToken());
@@ -43,24 +45,20 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     @Transactional
-    public void signOut(String encryptedRefreshToken, String accessToken) {
-        if (CommonObjectUtils.isNull(encryptedRefreshToken)) {
-            throw new ApiException(ErrorMessage.REFRESH_TOKEN_NOT_FOUND);
+    public void signOut(String accessToken) {
+        if (CommonObjectUtils.isNull(accessToken)) {
+            throw new ApiException(ErrorMessage.ACCESS_TOKEN_NOT_FOUND);
         }
 
-        // decrypt refresh token
-        String refreshToken = AESUtils.decrypt(encryptedRefreshToken);
-
-        Claims claims = jwtProvider.parseClaims(refreshToken);
+        // get user id
+        Claims claims = jwtProvider.parseClaims(accessToken);
 
         String userId = claims.getSubject();
 
         // delete token
         userTokenService.deleteUserTokenByUserId(userId);
 
-        // add access token to black list
-        // add access token to black list
-        // add access token to black list
+        // TODO: add token to black list
     }
 
     @Override
@@ -84,7 +82,7 @@ public class AuthServiceImpl implements AuthService {
         String userId = claims.getSubject();
 
         // get refresh token by user id
-        Optional<UserToken> userTokenOp = userTokenService.getUserTokenByUserId(userId);
+        Optional<UserToken> userTokenOp = userTokenService.getUserTokenOpByUserId(userId);
 
         // exist token && equals token
         if (userTokenOp.isPresent() && userTokenOp.get().getRefreshToken().equals(refreshToken)) {

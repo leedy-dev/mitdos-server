@@ -1,8 +1,8 @@
 package com.dydev.mitd.common.filter;
 
 import com.dydev.mitd.common.provider.JwtProvider;
-import com.dydev.mitd.domain.auth.service.dto.AuthDto;
 import com.dydev.mitd.common.utils.AESUtils;
+import com.dydev.mitd.domain.auth.service.dto.AuthDto;
 import com.dydev.mitd.domain.user.entity.User;
 import com.dydev.mitd.domain.user.service.UserTokenService;
 import jakarta.servlet.FilterChain;
@@ -44,7 +44,7 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         String userId = user.getUsername();
 
         // generate token
-        AuthDto.Token tokenDto = jwtProvider.generateToken(userId);
+        AuthDto.TokenWithRefresh tokenDto = jwtProvider.generateToken(userId);
 
         // set header
         // access token

@@ -13,16 +13,18 @@ import java.util.Optional;
 @Slf4j
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class UserTokenServiceImpl implements UserTokenService {
 
     private final UserTokenRepository userTokenRepository;
 
     @Override
-    public Optional<UserToken> getUserTokenByUserId(String userId) {
+    public Optional<UserToken> getUserTokenOpByUserId(String userId) {
         return userTokenRepository.findById(userId);
     }
 
     @Override
+    @Transactional
     public void updateUserToken(String userId, String refreshToken) {
         userTokenRepository.findById(userId)
                 .ifPresentOrElse(

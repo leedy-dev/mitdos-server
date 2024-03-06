@@ -6,11 +6,13 @@ import com.dydev.mitd.common.constants.AuthProperties;
 import com.dydev.mitd.common.constants.CommonConstants;
 import com.dydev.mitd.common.utils.CommonObjectUtils;
 import com.dydev.mitd.common.utils.CommonStringUtils;
+import com.dydev.mitd.common.utils.CookieUtils;
 import com.dydev.mitd.domain.auth.service.dto.AuthDto;
-import com.dydev.mitd.domain.user.enums.UserType;
+import com.dydev.mitd.domain.user.enums.UserTypes;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
@@ -67,12 +69,12 @@ public class JwtProvider implements InitializingBean {
     /**
      * generate token
      */
-    public AuthDto.Token generateToken(String username) {
+    public AuthDto.TokenWithRefresh generateToken(String username) {
         String accessToken = createAccessToken(username);
 
         String refreshToken = createRefreshToken(username);
 
-        return AuthDto.Token.builder()
+        return AuthDto.TokenWithRefresh.builder()
                 .accessToken(accessToken)
                 .refreshToken(refreshToken)
                 .build();
@@ -84,7 +86,7 @@ public class JwtProvider implements InitializingBean {
     private String createAccessToken(String username) {
         return Jwts.builder()
                 .setSubject(username)
-                .claim(AUTHORITIES_KEY, UserType.USER)
+                .claim(AUTHORITIES_KEY, UserTypes.USER)
                 .setExpiration(getTokenExpiration(accessTokenValidityInMilliSeconds))
                 .signWith(key, SignatureAlgorithm.HS256)
                 .setIssuer(issuer)
@@ -183,6 +185,7 @@ public class JwtProvider implements InitializingBean {
      */
     public String resolveAccessToken(HttpServletRequest request) {
         String token = request.getHeader(HttpHeaders.AUTHORIZATION);
+
         if (CommonStringUtils.hasText(token) && token.startsWith(AuthProperties.GRANT_TYPE)) {
             return token.substring(7);
         }
@@ -190,7 +193,8 @@ public class JwtProvider implements InitializingBean {
     }
 
     public String resolveRefreshToken(HttpServletRequest request) {
-        String token = request.getHeader(AuthProperties.HEADER_PREFIX_RT);
+        Cookie cookie = CookieUtils.getCookieValue(AuthProperties.HEADER_PREFIX_RT, request);
+        String token = cookie.getValue();
         return CommonStringUtils.hasText(token) ? token : null;
     }
 

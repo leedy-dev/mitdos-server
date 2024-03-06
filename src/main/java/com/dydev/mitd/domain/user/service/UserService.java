@@ -1,11 +1,14 @@
 package com.dydev.mitd.domain.user.service;
 
+import com.dydev.mitd.domain.user.entity.User;
 import com.dydev.mitd.domain.user.service.dto.UserRequestDto;
 import com.dydev.mitd.domain.user.service.dto.UserResponseDto;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 public interface UserService {
+
+    User getUserEntityById(String userId);
 
     UserResponseDto getUserById(String userId);
 
