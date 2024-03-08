@@ -13,4 +13,6 @@ public class CommonConstants {
     public static final String DOT      = ".";
     public static final String COLON    = ":";
 
+    public static final String SYSTEM   = "SYSTEM";
+
 }

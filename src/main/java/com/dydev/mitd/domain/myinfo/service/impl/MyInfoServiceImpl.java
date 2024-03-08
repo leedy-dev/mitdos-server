@@ -51,21 +51,20 @@ public class MyInfoServiceImpl implements MyInfoService {
 
     @Override
     @Transactional
-    public MyInfoResponseDto createMyInfo(MyInfoRequestDto myInfoRequestDto) {
+    public Long createMyInfo(MyInfoRequestDto myInfoRequestDto) {
         MyInfo myInfo = modelMapper.map(myInfoRequestDto, MyInfo.class);
-        return modelMapper.map(
-                myInfoRepository.save(myInfo),
-                MyInfoResponseDto.class);
+        myInfo = myInfoRepository.save(myInfo);
+        return myInfo.getId();
     }
 
     @Override
     @Transactional
-    public MyInfoResponseDto updateMyInfo(Long id, MyInfoRequestDto myInfoRequestDto) {
+    public Long updateMyInfo(Long id, MyInfoRequestDto myInfoRequestDto) {
         MyInfo myInfo = getMyInfoEntityById(id);
 
         modelMapper.map(myInfoRequestDto, myInfo);
 
-        return modelMapper.map(myInfo, MyInfoResponseDto.class);
+        return myInfo.getId();
     }
 
     @Override

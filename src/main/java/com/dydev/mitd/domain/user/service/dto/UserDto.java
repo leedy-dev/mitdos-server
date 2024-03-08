@@ -1,7 +1,10 @@
 package com.dydev.mitd.domain.user.service.dto;
 
 import com.dydev.mitd.common.base.dto.BaseCUDto;
+import com.dydev.mitd.common.utils.CommonObjectUtils;
 import com.dydev.mitd.common.validate.PatternDefine;
+import com.dydev.mitd.domain.role.enums.RoleTypes;
+import com.dydev.mitd.domain.user.entity.User;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Pattern;
@@ -9,6 +12,9 @@ import jakarta.validation.constraints.Size;
 import lombok.Getter;
 
 import java.time.LocalDateTime;
+import java.util.HashSet;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Getter
 public class UserDto extends BaseCUDto {
@@ -45,6 +51,8 @@ public class UserDto extends BaseCUDto {
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private LocalDateTime lastLoginDateTime;
 
+    private Set<RoleTypes> roles = new HashSet<>();
+
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private boolean accountExpired = false;
 
@@ -56,5 +64,12 @@ public class UserDto extends BaseCUDto {
 
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     private boolean enabled = false;
+
+    public void applyRoles(User entity) {
+        roles = entity.getUserRoles().stream()
+                .filter(ur -> CommonObjectUtils.nonNull(ur.getId()))
+                .map(ur -> ur.getId().getRoleId())
+                .collect(Collectors.toSet());
+    }
 
 }

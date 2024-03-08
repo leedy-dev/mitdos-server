@@ -14,9 +14,9 @@ public interface MyInfoService {
 
     Page<MyInfoResponseDto> getMyInfoList(Pageable pageable);
 
-    MyInfoResponseDto createMyInfo(MyInfoRequestDto myInfoRequestDto);
+    Long createMyInfo(MyInfoRequestDto myInfoRequestDto);
 
-    MyInfoResponseDto updateMyInfo(Long id, MyInfoRequestDto myInfoRequestDto);
+    Long updateMyInfo(Long id, MyInfoRequestDto myInfoRequestDto);
 
     Long deleteMyInfoById(Long id);
 

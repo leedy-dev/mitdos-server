@@ -7,26 +7,30 @@ import lombok.RequiredArgsConstructor;
 @JsonFormat(shape = JsonFormat.Shape.OBJECT)
 public enum ErrorMessage implements ErrorMessageIF {
     // AUTH
-    TOKEN_WITHOUT_CREDENTIAL(400, "Token without credential"),
+    TOKEN_WITHOUT_CREDENTIAL(400, "Token Without Credential"),
 
     // TOKEN
-    ACCESS_TOKEN_NOT_FOUND(400, "Access token not found"),
-    REFRESH_TOKEN_NOT_FOUND(400, "Refresh token not found"),
-    INVALID_REFRESH_TOKEN(400, "Invalid refresh token"),
-    EXPIRED_TOKEN_REFRESH_TOKEN(400, "Expired refresh token"),
+    ACCESS_TOKEN_NOT_FOUND(400, "Access Token Not Found"),
+    REFRESH_TOKEN_NOT_FOUND(400, "Refresh Token Not Found"),
+    INVALID_REFRESH_TOKEN(400, "Invalid Refresh Token"),
+    EXPIRED_TOKEN_REFRESH_TOKEN(400, "Expired Refresh Token"),
 
     // RESOURCE
-    RESOURCE_NOT_FOUND(204, "Resource not found"),
+    RESOURCE_NOT_FOUND(204, "Resource Not Found"),
+    TEMPORARY_SERVER_ERROR(400, "Temporary Server Error"),
 
     // DATA
-    DATA_EXISTS(400, "Data that already exists"),
-    DATA_NOT_FOUND(400, "Data not found"),
-    INVALID_VALUE(400, "Invalid value"),
+    DATA_EXISTS(400, "Data That Already Exists"),
+    DATA_NOT_FOUND(400, "Data Not Found"),
+    INVALID_VALUE(400, "Invalid Value"),
 
     // USER
-    LOGIN_USER_NOT_FOUND(400, "Login user not found"),
-    USER_NOT_FOUND(400, "User not found"),
-    DUPLICATE_USER_ID(400, "This is a duplicate User Id");
+    LOGIN_USER_NOT_FOUND(400, "Login User Not Found"),
+    USER_NOT_FOUND(400, "User Not Found"),
+    DUPLICATE_USER_ID(400, "Duplicated User Id"),
+
+    // TEST
+    ERROR_MESSAGE_TEST(400, "Greetings");
 
     private int status;
     private String message;
@@ -40,26 +44,26 @@ public enum ErrorMessage implements ErrorMessageIF {
 
     @Override
     public String getCode() {
-        return null;
+        return name();
     }
 
     @Override
     public String getMessage() {
-        return null;
+        return message;
     }
 
     @Override
     public int getStatus() {
-        return 0;
+        return status;
     }
 
     @Override
     public String getDetail() {
-        return null;
+        return detail;
     }
 
     @Override
     public String getUuid() {
-        return null;
+        return uuid;
     }
 }

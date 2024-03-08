@@ -14,10 +14,14 @@ public interface UserService {
 
     Page<UserResponseDto> getUserListWithSearchAndPaging(UserRequestDto.Search search, Pageable pageable);
 
-    UserResponseDto createUser(UserRequestDto userRequestDto);
+    String createUser(UserRequestDto userRequestDto);
 
-    void updateUserWithSignIn(String userId, String refreshToken);
+    String updateUser(String userId, UserRequestDto.Update userRequestDto);
 
-    void deleteUserById(String userId);
+    String updateUserPassword(String userId, UserRequestDto.Password userRequestDto);
+
+    String updateUserWithSignIn(String userId, String refreshToken);
+
+    String deleteUserById(String userId);
 
 }

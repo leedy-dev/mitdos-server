@@ -2,8 +2,10 @@ package com.dydev.mitd.domain.user.service.impl;
 
 import com.dydev.mitd.common.exception.ApiException;
 import com.dydev.mitd.common.exception.ErrorMessage;
+import com.dydev.mitd.domain.role.embedded.UserRoleId;
+import com.dydev.mitd.domain.role.entity.Role;
+import com.dydev.mitd.domain.role.entity.UserRole;
 import com.dydev.mitd.domain.user.entity.User;
-import com.dydev.mitd.domain.user.enums.UserTypes;
 import com.dydev.mitd.domain.user.repository.UserRepository;
 import com.dydev.mitd.domain.user.service.UserService;
 import com.dydev.mitd.domain.user.service.UserTokenService;
@@ -61,23 +63,22 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
     @Override
     @Transactional
-    public UserResponseDto createUser(UserRequestDto userRequestDto) {
+    public String createUser(UserRequestDto userRequestDto) {
         String userId = userRequestDto.getUserId();
 
         // 중복 체크
-        Optional<User> userOp = userRepository.findById(userId);
+        if (userRepository.existsById(userId)) {
+            throw new ApiException(userId, ErrorMessage.DUPLICATE_USER_ID);
+        }
 
-        if (userOp.isPresent()) throw new ApiException(userId, ErrorMessage.DUPLICATE_USER_ID);
-
+        // build user
         User user = User.builder()
                 // user info
                 .userId(userRequestDto.getUserId())
-                .dtype(UserTypes.USER.getValue())
                 .password(userRequestDto.getPassword())
                 .name(userRequestDto.getName())
                 .nickname(userRequestDto.getNickname())
                 .email(userRequestDto.getEmail())
-                .passwordChangeDateTime(LocalDateTime.now())
 
                 // credential
                 .accountExpired(false)
@@ -87,14 +88,28 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
                 .build();
 
-        return modelMapper.map(
-                userRepository.save(user),
-                UserResponseDto.class);
+        // get default role
+        Role defaultRole = Role.getDefaultRole();
+
+        // add role
+        user.addRole(UserRole.builder()
+                        .userRoleId(UserRoleId.builder()
+                                .userId(userId)
+                                .roleId(defaultRole.getRoleId())
+                                .build())
+                        .user(user)
+                        .role(defaultRole)
+                .build());
+
+        // save
+        user = userRepository.save(user);
+
+        return user.getUserId();
     }
 
     @Override
     @Transactional
-    public void updateUserWithSignIn(String userId, String refreshToken) {
+    public String updateUserWithSignIn(String userId, String refreshToken) {
         Optional<User> userOp = userRepository.findById(userId);
 
         User user = userOp.orElseThrow(() -> new ApiException(ErrorMessage.USER_NOT_FOUND));
@@ -104,12 +119,44 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
         // refresh token 최신화
         userTokenService.updateUserToken(userId, refreshToken);
+
+        return userId;
     }
 
     @Override
     @Transactional
-    public void deleteUserById(String userId) {
-        userRepository.deleteById(userId);
+    public String updateUser(String userId, UserRequestDto.Update userRequestDto) {
+        // get
+        User user = getUserEntityById(userId);
+
+        // update
+        modelMapper.map(userRequestDto, user);
+
+        return userId;
+    }
+
+    @Override
+    @Transactional
+    public String updateUserPassword(String userId, UserRequestDto.Password userRequestDto) {
+        // get
+        User user = getUserEntityById(userId);
+
+        // update
+        user.updatePassword(userRequestDto.getPassword());
+
+        return userId;
+    }
+
+    @Override
+    @Transactional
+    public String deleteUserById(String userId) {
+        // get
+        User user = getUserEntityById(userId);
+
+        // delete
+        userRepository.delete(user);
+
+        return user.getUserId();
     }
 
     /* user details */
