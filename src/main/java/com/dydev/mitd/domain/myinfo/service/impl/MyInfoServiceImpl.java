@@ -52,16 +52,22 @@ public class MyInfoServiceImpl implements MyInfoService {
     @Override
     @Transactional
     public Long createMyInfo(MyInfoRequestDto myInfoRequestDto) {
+        // set
         MyInfo myInfo = modelMapper.map(myInfoRequestDto, MyInfo.class);
+
+        // save
         myInfo = myInfoRepository.save(myInfo);
+
         return myInfo.getId();
     }
 
     @Override
     @Transactional
     public Long updateMyInfo(Long id, MyInfoRequestDto myInfoRequestDto) {
+        // get
         MyInfo myInfo = getMyInfoEntityById(id);
 
+        // update
         modelMapper.map(myInfoRequestDto, myInfo);
 
         return myInfo.getId();
@@ -70,7 +76,12 @@ public class MyInfoServiceImpl implements MyInfoService {
     @Override
     @Transactional
     public Long deleteMyInfoById(Long id) {
-        myInfoRepository.deleteById(id);
-        return id;
+        // get
+        MyInfo myInfo = getMyInfoEntityById(id);
+
+        // delete
+        myInfoRepository.delete(myInfo);
+
+        return myInfo.getId();
     }
 }

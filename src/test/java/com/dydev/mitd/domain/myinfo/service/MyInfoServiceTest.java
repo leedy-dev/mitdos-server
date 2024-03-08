@@ -68,13 +68,13 @@ class MyInfoServiceTest {
     @DisplayName("MyInfo Response 조회 by id")
     void findResponseByIdTest() {
         // given
-        doReturn(TEST_MY_INFO).when(myInfoRepository).findById(anyLong());
+        doReturn(Optional.of(TEST_MY_INFO)).when(myInfoRepository).findById(anyLong());
 
         // when
-        MyInfoResponseDto responseDto = myInfoService.getMyInfoById(1L);
+        MyInfoResponseDto responseDto = myInfoService.getMyInfoById(0L);
 
         // then
-        verify(modelMapper, times(1)).map(TEST_MY_INFO, eq(MyInfoResponseDto.class));
+        verify(modelMapper, times(1)).map(any(MyInfo.class), eq(MyInfoResponseDto.class));
     }
 
     @Test
