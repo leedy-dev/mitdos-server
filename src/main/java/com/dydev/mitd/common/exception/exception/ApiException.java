@@ -1,4 +1,6 @@
-package com.dydev.mitd.common.exception;
+package com.dydev.mitd.common.exception.exception;
+
+import com.dydev.mitd.common.exception.message.ErrorMessageIF;
 
 public class ApiException extends RuntimeException {
 
@@ -30,5 +32,11 @@ public class ApiException extends RuntimeException {
     public Object[] getErrorMessageArgs() {
         return this.errorMessageArgs;
     }
+
+    // 401 - entry point
+    public static class AuthenticationEntryPointException extends RuntimeException {}
+
+    // 403 - access denied
+    public static class AccessDeniedException extends RuntimeException {}
 
 }

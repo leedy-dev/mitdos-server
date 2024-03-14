@@ -1,4 +1,4 @@
-package com.dydev.mitd.common.exception;
+package com.dydev.mitd.common.exception.message;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.RequiredArgsConstructor;
@@ -8,6 +8,8 @@ import lombok.RequiredArgsConstructor;
 public enum ErrorMessage implements ErrorMessageIF {
     // AUTH
     TOKEN_WITHOUT_CREDENTIAL(400, "Token Without Credential"),
+    UNAUTHORIZED_USER(401, "Unauthorized User"),
+    ACCESS_DENIED(403, "Access Denied"),
 
     // TOKEN
     ACCESS_TOKEN_NOT_FOUND(400, "Access Token Not Found"),
@@ -28,6 +30,7 @@ public enum ErrorMessage implements ErrorMessageIF {
     LOGIN_USER_NOT_FOUND(400, "Login User Not Found"),
     USER_NOT_FOUND(400, "User Not Found"),
     DUPLICATE_USER_ID(400, "Duplicated User Id"),
+    DUPLICATE_EMAIL(400, "Duplicated Email"),
 
     // TEST
     ERROR_MESSAGE_TEST(400, "Greetings");

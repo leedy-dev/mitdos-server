@@ -1,5 +1,6 @@
 package com.dydev.mitd.common.exception;
 
+import com.dydev.mitd.common.exception.message.ErrorMessageIF;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;

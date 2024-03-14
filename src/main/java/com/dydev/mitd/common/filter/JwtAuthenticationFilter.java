@@ -44,7 +44,7 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         String userId = user.getUsername();
 
         // generate token
-        AuthDto.TokenWithRefresh tokenDto = jwtProvider.generateToken(userId);
+        AuthDto.TokenWithRefresh tokenDto = jwtProvider.generateToken(userId, user.getAuthorities());
 
         // set header
         // access token

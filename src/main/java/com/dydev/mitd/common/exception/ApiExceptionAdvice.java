@@ -1,5 +1,7 @@
 package com.dydev.mitd.common.exception;
 
+import com.dydev.mitd.common.exception.exception.ApiException;
+import com.dydev.mitd.common.exception.message.ErrorMessage;
 import com.dydev.mitd.common.utils.ErrorLogUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -49,6 +51,22 @@ public class ApiExceptionAdvice {
         response.setUuid(UUID.randomUUID().toString());
 
         return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(value = ApiException.AuthenticationEntryPointException.class)
+    @ResponseStatus(value = HttpStatus.UNAUTHORIZED)
+    protected ResponseEntity<ErrorResponse> handleAuthenticationEntryPointException() {
+        ErrorResponse response = ErrorResponse.of(ErrorMessage.UNAUTHORIZED_USER);
+
+        return new ResponseEntity<>(response, HttpStatus.UNAUTHORIZED);
+    }
+
+    @ExceptionHandler(value = ApiException.AccessDeniedException.class)
+    @ResponseStatus(value = HttpStatus.FORBIDDEN)
+    protected ResponseEntity<ErrorResponse> handleAccessDeniedException() {
+        ErrorResponse response = ErrorResponse.of(ErrorMessage.ACCESS_DENIED);
+
+        return new ResponseEntity<>(response, HttpStatus.FORBIDDEN);
     }
 
 }

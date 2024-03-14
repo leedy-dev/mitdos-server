@@ -1,7 +1,7 @@
 package com.dydev.mitd.common.interceptor;
 
-import com.dydev.mitd.common.exception.ApiException;
-import com.dydev.mitd.common.exception.ErrorMessage;
+import com.dydev.mitd.common.exception.exception.ApiException;
+import com.dydev.mitd.common.exception.message.ErrorMessage;
 import com.dydev.mitd.common.constants.CommonConstants;
 import com.dydev.mitd.common.utils.CommonObjectUtils;
 import jakarta.validation.ConstraintViolation;

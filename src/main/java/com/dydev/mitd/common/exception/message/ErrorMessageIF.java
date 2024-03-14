@@ -1,4 +1,4 @@
-package com.dydev.mitd.common.exception;
+package com.dydev.mitd.common.exception.message;
 
 public interface ErrorMessageIF {
     String getCode();
