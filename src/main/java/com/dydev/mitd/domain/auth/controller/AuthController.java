@@ -5,6 +5,7 @@ import com.dydev.mitd.common.provider.JwtProvider;
 import com.dydev.mitd.common.utils.CookieUtils;
 import com.dydev.mitd.domain.auth.service.AuthService;
 import com.dydev.mitd.domain.auth.service.dto.AuthDto;
+import com.dydev.mitd.domain.user.service.dto.UserRequestDto;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
@@ -12,6 +13,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -42,6 +44,13 @@ public class AuthController {
                 .build();
 
         return new ResponseEntity<>(responseDto, HttpStatus.OK);
+    }
+
+    @PostMapping("/sign-up")
+    public ResponseEntity<String> signUp(
+            @Valid @RequestBody UserRequestDto.Join userRequestDto,
+            BindingResult bindingResult) {
+        return new ResponseEntity<>(authService.signUp(userRequestDto), HttpStatus.CREATED);
     }
 
     @PostMapping("/sign-out")

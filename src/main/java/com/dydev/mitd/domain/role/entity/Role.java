@@ -3,6 +3,8 @@ package com.dydev.mitd.domain.role.entity;
 import com.dydev.mitd.common.base.entity.BaseCUEntity;
 import com.dydev.mitd.domain.role.enums.RoleTypes;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 
@@ -19,11 +21,13 @@ import lombok.experimental.SuperBuilder;
 public class Role extends BaseCUEntity {
 
     @Id
+    @Size(max = 10)
     @Enumerated(EnumType.STRING)
-    @Column(length = 10)
     private RoleTypes roleId;
 
-    @Column(nullable = false, length = 30)
+    @NotNull
+    @Size(min = 1, max = 30)
+    @Column
     private String roleName;
 
     public static Role getDefaultRole() {

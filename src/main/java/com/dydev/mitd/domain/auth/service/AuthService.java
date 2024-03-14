@@ -1,7 +1,7 @@
 package com.dydev.mitd.domain.auth.service;
 
-import com.dydev.mitd.domain.user.service.dto.UserRequestDto;
 import com.dydev.mitd.domain.auth.service.dto.AuthDto;
+import com.dydev.mitd.domain.user.service.dto.UserRequestDto;
 
 public interface AuthService {
 
@@ -9,7 +9,7 @@ public interface AuthService {
 
     void signOut(String accessToken);
 
-    void signUp(UserRequestDto.Join userRequestDto);
+    String signUp(UserRequestDto.Join userRequestDto);
 
     String reissueAccessToken(String encryptedRefreshToken);
 

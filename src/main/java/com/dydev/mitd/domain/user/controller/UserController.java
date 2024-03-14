@@ -53,6 +53,14 @@ public class UserController {
         return new ResponseEntity<>(userService.updateUserPassword(userId, userRequestDto), HttpStatus.OK);
     }
 
+    @PutMapping("/{userId}/roles")
+    public ResponseEntity<String> doUpdateUserRoles(
+            @PathVariable("userId") String userId,
+            @Valid @RequestBody UserRequestDto.Role userRequestDto,
+            BindingResult bindingResult) {
+        return new ResponseEntity<>(userService.updateUserRoles(userId, userRequestDto), HttpStatus.OK);
+    }
+
     @DeleteMapping("/{userId}")
     public ResponseEntity<String> doDeleteUser(@PathVariable("userId") String userId) {
         userService.deleteUserById(userId);

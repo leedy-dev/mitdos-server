@@ -1,6 +1,6 @@
 package com.dydev.mitd.domain.myinfo.service;
 
-import com.dydev.mitd.common.exception.ApiException;
+import com.dydev.mitd.common.exception.exception.ApiException;
 import com.dydev.mitd.domain.myinfo.entity.MyInfo;
 import com.dydev.mitd.domain.myinfo.repository.MyInfoRepository;
 import com.dydev.mitd.domain.myinfo.service.dto.MyInfoRequestDto;

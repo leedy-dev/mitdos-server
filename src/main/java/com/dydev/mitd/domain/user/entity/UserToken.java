@@ -4,6 +4,7 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import org.springframework.data.annotation.LastModifiedDate;
 
@@ -22,13 +23,14 @@ public class UserToken {
     @Id
     private String userId;
 
+    @NotNull
     @Column
     private String refreshToken;
 
     // Update
     @Builder.Default
     @LastModifiedDate
-    @Column
+    @Column(columnDefinition = "timestamp default current_timestamp")
     private LocalDateTime updateDateTime = LocalDateTime.now();
 
     // update

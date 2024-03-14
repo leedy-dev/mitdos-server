@@ -7,6 +7,7 @@ import com.dydev.mitd.domain.user.entity.User;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 import org.springframework.data.domain.Persistable;
@@ -27,6 +28,7 @@ import org.springframework.data.domain.Persistable;
 @SuperBuilder
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Getter
 @Entity
 @Table(
         name = "tb_user_role"
@@ -53,7 +55,15 @@ public class UserRole extends BaseCEntity implements Persistable<UserRoleId> {
 
     @Override
     public boolean isNew() {
-        return CommonObjectUtils.isNull(getCreateDateTime());
+        return CommonObjectUtils.isNull(getCreateUserId());
+    }
+
+    public void applyUser(User user) {
+        this.user = user;
+    }
+
+    public void applyRole(Role role) {
+        this.role = role;
     }
 
 }

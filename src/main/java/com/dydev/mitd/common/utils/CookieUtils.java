@@ -33,6 +33,7 @@ public class CookieUtils {
         // 설정
         cookie.setSecure(true);
         cookie.setHttpOnly(true);
+
         cookie.setPath("/");
 
         return cookie;

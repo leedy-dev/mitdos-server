@@ -1,10 +1,13 @@
 package com.dydev.mitd.domain.user.service.impl;
 
-import com.dydev.mitd.common.exception.ApiException;
-import com.dydev.mitd.common.exception.ErrorMessage;
+import com.dydev.mitd.common.exception.exception.ApiException;
+import com.dydev.mitd.common.exception.message.ErrorMessage;
+import com.dydev.mitd.common.utils.CommonObjectUtils;
 import com.dydev.mitd.domain.role.embedded.UserRoleId;
 import com.dydev.mitd.domain.role.entity.Role;
 import com.dydev.mitd.domain.role.entity.UserRole;
+import com.dydev.mitd.domain.role.enums.RoleTypes;
+import com.dydev.mitd.domain.role.service.RoleService;
 import com.dydev.mitd.domain.user.entity.User;
 import com.dydev.mitd.domain.user.repository.UserRepository;
 import com.dydev.mitd.domain.user.service.UserService;
@@ -23,8 +26,8 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -34,6 +37,8 @@ import java.util.stream.Collectors;
 public class UserServiceImpl implements UserService, UserDetailsService {
 
     private final UserRepository userRepository;
+
+    private final RoleService roleService;
 
     private final UserTokenService userTokenService;
 
@@ -66,9 +71,14 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     public String createUser(UserRequestDto userRequestDto) {
         String userId = userRequestDto.getUserId();
 
-        // 중복 체크
+        // 중복 체크 id
         if (userRepository.existsById(userId)) {
             throw new ApiException(userId, ErrorMessage.DUPLICATE_USER_ID);
+        }
+
+        // 중복 체크 email
+        if (userRepository.existsByEmail(userRequestDto.getEmail())) {
+            throw new ApiException(userRequestDto.getEmail(), ErrorMessage.DUPLICATE_EMAIL);
         }
 
         // build user
@@ -92,14 +102,16 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         Role defaultRole = Role.getDefaultRole();
 
         // add role
-        user.addRole(UserRole.builder()
+        user.applyRoles(Set.of(
+                UserRole.builder()
                         .userRoleId(UserRoleId.builder()
                                 .userId(userId)
                                 .roleId(defaultRole.getRoleId())
                                 .build())
                         .user(user)
                         .role(defaultRole)
-                .build());
+                        .build()
+        ));
 
         // save
         user = userRepository.save(user);
@@ -132,7 +144,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         // update
         modelMapper.map(userRequestDto, user);
 
-        return userId;
+        return user.getUserId();
     }
 
     @Override
@@ -144,7 +156,54 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         // update
         user.updatePassword(userRequestDto.getPassword());
 
-        return userId;
+        return user.getUserId();
+    }
+
+    @Override
+    @Transactional
+    public String updateUserRoles(String userId, UserRequestDto.Role userRequestDto) {
+        // get user
+        User user = getUserEntityById(userId);
+
+        // request roles
+        Set<RoleTypes> requestRoleTypes = userRequestDto.getRoles();
+        
+        // original roles
+        Set<UserRole> originalRoles = user.getUserRoles();
+
+        // get roles
+        Set<Role> roles = roleService.getRoleEntityList(userRequestDto.getRoles());
+
+        // remove roles
+        originalRoles.forEach(ur -> {
+            if (CommonObjectUtils.nonNull(ur.getId()) && !requestRoleTypes.contains(ur.getId().getRoleId())) {
+                user.removeRole(ur);
+            }
+        });
+
+        // add roles
+        user.addRoles(roles.stream()
+                .filter(r -> !originalRoles.stream()
+                        .map(or -> CommonObjectUtils.nonNull(or.getId()) ? or.getId().getRoleId() : null)
+                        .collect(Collectors.toSet())
+                        .contains(r.getRoleId()))
+                .map(r -> {
+                    UserRole userRole = UserRole.builder()
+                            .userRoleId(UserRoleId.builder()
+                                    .roleId(r.getRoleId())
+                                    .userId(user.getUserId())
+                                    .build())
+                            .build();
+
+                    userRole.applyUser(user);
+                    userRole.applyRole(r);
+
+                    return userRole;
+                })
+                .collect(Collectors.toSet())
+        );
+
+        return user.getUserId();
     }
 
     @Override

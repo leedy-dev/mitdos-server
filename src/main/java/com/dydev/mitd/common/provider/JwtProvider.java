@@ -1,12 +1,13 @@
 package com.dydev.mitd.common.provider;
 
-import com.dydev.mitd.common.exception.ApiException;
-import com.dydev.mitd.common.exception.ErrorMessage;
 import com.dydev.mitd.common.constants.AuthProperties;
 import com.dydev.mitd.common.constants.CommonConstants;
+import com.dydev.mitd.common.exception.exception.ApiException;
+import com.dydev.mitd.common.exception.message.ErrorMessage;
 import com.dydev.mitd.common.utils.CommonObjectUtils;
 import com.dydev.mitd.common.utils.CommonStringUtils;
 import com.dydev.mitd.common.utils.CookieUtils;
+import com.dydev.mitd.common.utils.ErrorLogUtils;
 import com.dydev.mitd.domain.auth.service.dto.AuthDto;
 import com.dydev.mitd.domain.user.enums.UserTypes;
 import io.jsonwebtoken.*;
@@ -30,9 +31,7 @@ import org.springframework.stereotype.Component;
 import java.security.Key;
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Date;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -40,6 +39,7 @@ import java.util.stream.Collectors;
 public class JwtProvider implements InitializingBean {
 
     private static final String AUTHORITIES_KEY = "auth";
+    private static final String ROLES_KEY = "roles";
 
     private final String secret;
     private final long accessTokenValidityInMilliSeconds;
@@ -69,8 +69,8 @@ public class JwtProvider implements InitializingBean {
     /**
      * generate token
      */
-    public AuthDto.TokenWithRefresh generateToken(String username) {
-        String accessToken = createAccessToken(username);
+    public AuthDto.TokenWithRefresh generateToken(String username, Collection<? extends GrantedAuthority> authorities) {
+        String accessToken = createAccessToken(username, authorities);
 
         String refreshToken = createRefreshToken(username);
 
@@ -83,10 +83,15 @@ public class JwtProvider implements InitializingBean {
     /**
      * create access token
      */
-    private String createAccessToken(String username) {
+    private String createAccessToken(String username, Collection<? extends GrantedAuthority> authorities) {
+        Set<String> roles = authorities.stream()
+                .map(GrantedAuthority::getAuthority)
+                .collect(Collectors.toSet());
+
         return Jwts.builder()
                 .setSubject(username)
                 .claim(AUTHORITIES_KEY, UserTypes.USER)
+                .claim(ROLES_KEY, roles)
                 .setExpiration(getTokenExpiration(accessTokenValidityInMilliSeconds))
                 .signWith(key, SignatureAlgorithm.HS256)
                 .setIssuer(issuer)
@@ -126,9 +131,13 @@ public class JwtProvider implements InitializingBean {
             throw new ApiException(ErrorMessage.TOKEN_WITHOUT_CREDENTIAL);
         }
 
-        Collection<? extends GrantedAuthority> authorities = Arrays.stream(claims.get(AUTHORITIES_KEY).toString().split(CommonConstants.COMMA))
+        // get roles
+        List<String> roles = claims.get(ROLES_KEY, ArrayList.class);
+
+        // set authorities
+        Collection<? extends GrantedAuthority> authorities = roles.stream()
                 .map(SimpleGrantedAuthority::new)
-                .collect(Collectors.toList());
+                .collect(Collectors.toSet());
 
         UserDetails principal = new User(claims.getSubject(), CommonConstants.EMPTY, authorities);
         return new UsernamePasswordAuthenticationToken(principal, CommonConstants.EMPTY, authorities);
@@ -142,13 +151,13 @@ public class JwtProvider implements InitializingBean {
             parseClaims(token);
             return true;
         } catch (SecurityException | MalformedJwtException e) {
-            log.error("Invalid JWT Token", e);
+            ErrorLogUtils.printError(log, e, "Invalid JWT Token");
         } catch (ExpiredJwtException e) {
-            log.error("Expired JWT Token", e);
+            ErrorLogUtils.printError(log, e , "Expired JWT Token");
         } catch (UnsupportedJwtException e) {
-            log.error("Unsupported JWT Token", e);
+            ErrorLogUtils.printError(log, e , "Unsupported JWT Token");
         } catch (IllegalArgumentException e) {
-            log.error("JWT claims string is empty");
+            ErrorLogUtils.printError(log, e , "JWT claims string is empty");
         }
 
         return false;

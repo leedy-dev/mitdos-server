@@ -5,6 +5,7 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
 import java.io.Serializable;
@@ -17,11 +18,13 @@ import java.io.Serializable;
 @Getter
 public class UserRoleId implements Serializable {
 
-    @Column(name = "user_id", nullable = false)
+    @NotNull
+    @Column(name = "user_id")
     private String userId;
 
+    @NotNull
     @Enumerated(EnumType.STRING)
-    @Column(name = "role_id", nullable = false)
+    @Column(name = "role_id")
     private RoleTypes roleId;
 
 }

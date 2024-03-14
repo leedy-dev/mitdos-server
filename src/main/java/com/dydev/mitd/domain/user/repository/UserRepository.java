@@ -10,6 +10,8 @@ import org.springframework.data.repository.query.Param;
 
 public interface UserRepository extends JpaRepository<User, String> {
 
+    boolean existsByEmail(String email);
+
     @Query(value = "select distinct u from User u "
             + "where 1=1"
             // userId

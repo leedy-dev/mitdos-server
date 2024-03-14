@@ -1,6 +1,6 @@
 package com.dydev.mitd.domain.user.service;
 
-import com.dydev.mitd.common.exception.ApiException;
+import com.dydev.mitd.common.exception.exception.ApiException;
 import com.dydev.mitd.domain.user.entity.User;
 import com.dydev.mitd.domain.user.repository.UserRepository;
 import com.dydev.mitd.domain.user.service.dto.UserRequestDto;
@@ -75,7 +75,7 @@ class UserServiceTest {
         doReturn(Optional.of(TEST_USER)).when(userRepository).findById(any());
 
         // when
-        UserResponseDto responseDto = userService.getUserById(TEST_USER_ID);
+        userService.getUserById(TEST_USER_ID);
 
         // then
         verify(modelMapper, times(1)).map(any(User.class), eq(UserResponseDto.class));

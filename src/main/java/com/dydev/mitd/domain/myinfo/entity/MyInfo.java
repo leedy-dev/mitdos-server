@@ -2,6 +2,8 @@ package com.dydev.mitd.domain.myinfo.entity;
 
 import com.dydev.mitd.common.base.entity.BaseCUEntity;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
 
@@ -21,22 +23,34 @@ public class MyInfo extends BaseCUEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private final Long id = 0L;
 
-    @Column(nullable = false, length = 200)
+    @NotNull
+    @Size(min = 1, max = 200)
+    @Column
     private String nameKor;
 
-    @Column(nullable = false, length = 200)
+    @NotNull
+    @Size(min = 1, max = 200)
+    @Column
     private String nameEng;
 
-    @Column(nullable = false, length = 200)
+    @NotNull
+    @Size(min = 1, max = 200)
+    @Column
     private String phoneNum;
 
-    @Column(nullable = false, length = 200)
+    @NotNull
+    @Size(min = 1, max = 200)
+    @Column
     private String email;
 
-    @Column(nullable = false, length = 200)
+    @NotNull
+    @Size(min = 1, max = 200)
+    @Column
     private String notice;
 
-    @Column(nullable = false, length = 40000)
+    @NotNull
+    @Size(min = 1, max = 40000)
+    @Column
     private String introduction;
 
 }

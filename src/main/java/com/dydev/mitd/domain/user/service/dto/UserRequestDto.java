@@ -1,10 +1,12 @@
 package com.dydev.mitd.domain.user.service.dto;
 
 import com.dydev.mitd.common.validate.PatternDefine;
+import com.dydev.mitd.domain.role.enums.RoleTypes;
 import com.dydev.mitd.domain.role.service.dto.UserRoleDto;
 import com.dydev.mitd.domain.user.entity.User;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 import lombok.Getter;
@@ -85,6 +87,15 @@ public class UserRequestDto {
         @Pattern(regexp = PatternDefine.PASSWORD_NUMBER_PATTERN)
         @Size(max = 20)
         private String password;
+    }
+
+    @Getter
+    public static class Role {
+        private Set<RoleTypes> roles;
+
+        private Set<RoleTypes> addRoles;
+
+        private Set<RoleTypes> removeRoles;
     }
 
     @Getter
