@@ -21,11 +21,17 @@ class PasswordEncodeTest {
     @Test
     @DisplayName("비밀번호 암호화 테스트")
     void encodeTest() {
-        String encoded = passwordEncoder.encode("123");
+        String encoded1 = passwordEncoder.encode("123");
+        String encoded2 = passwordEncoder.encode("123");
+        String encoded3 = passwordEncoder.encode("123");
 
-        System.out.println("encoded password: " + encoded);
+        System.out.println("encoded password 1: " + encoded1);
+        System.out.println("encoded password 2: " + encoded2);
+        System.out.println("encoded password 3: " + encoded3);
 
-        Assertions.assertThat(passwordEncoder.matches("1234", encoded)).isTrue();
+        Assertions.assertThat(passwordEncoder.matches("123", encoded1)).isTrue();
+        Assertions.assertThat(passwordEncoder.matches("123", encoded2)).isTrue();
+        Assertions.assertThat(passwordEncoder.matches("123", encoded3)).isTrue();
     }
 
 }

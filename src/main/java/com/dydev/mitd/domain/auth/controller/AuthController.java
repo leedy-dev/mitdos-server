@@ -30,6 +30,7 @@ public class AuthController {
 
     @PostMapping("/sign-in")
     public ResponseEntity<AuthDto.Token> signIn(@Valid @RequestBody AuthDto.SignIn authDto, HttpServletResponse response) {
+        // sign in
         AuthDto.TokenWithRefresh tokenDto = authService.signIn(authDto);
 
         String accessToken = tokenDto.getAccessToken();
@@ -54,10 +55,12 @@ public class AuthController {
     }
 
     @PostMapping("/sign-out")
-    public ResponseEntity<Void> signOut(HttpServletRequest request) {
+    public ResponseEntity<Void> signOut(HttpServletRequest request, HttpServletResponse response) {
         String accessToken = jwtProvider.resolveAccessToken(request);
 
         authService.signOut(accessToken);
+
+        response.addCookie(CookieUtils.removeTokenCookie());
 
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }

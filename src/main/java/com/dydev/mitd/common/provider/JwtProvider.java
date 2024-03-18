@@ -203,7 +203,13 @@ public class JwtProvider implements InitializingBean {
 
     public String resolveRefreshToken(HttpServletRequest request) {
         Cookie cookie = CookieUtils.getCookieValue(AuthProperties.HEADER_PREFIX_RT, request);
+
+        if (CommonObjectUtils.isNull(cookie)) {
+            throw new ApiException(ErrorMessage.REFRESH_TOKEN_NOT_FOUND);
+        }
+
         String token = cookie.getValue();
+
         return CommonStringUtils.hasText(token) ? token : null;
     }
 

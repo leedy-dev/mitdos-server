@@ -131,6 +131,7 @@ public class WebSecurityConfig {
         configuration.addAllowedHeader("*");
         configuration.addExposedHeader(HttpHeaders.AUTHORIZATION);
         configuration.addExposedHeader(AuthProperties.HEADER_PREFIX_RT);
+        configuration.addExposedHeader(AuthProperties.SET_COOKIE);
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);

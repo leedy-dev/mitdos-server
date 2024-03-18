@@ -14,6 +14,7 @@ import com.dydev.mitd.domain.user.service.UserTokenService;
 import com.dydev.mitd.domain.user.service.dto.UserRequestDto;
 import io.jsonwebtoken.Claims;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -24,6 +25,7 @@ import java.util.Optional;
 @Transactional(readOnly = true)
 public class AuthServiceImpl implements AuthService {
 
+    private final PasswordEncoder passwordEncoder;
     private final JwtProvider jwtProvider;
     private final UserService userService;
     private final UserTokenService userTokenService;
@@ -35,6 +37,9 @@ public class AuthServiceImpl implements AuthService {
 
         User user = userService.getUserEntityById(userId);
 
+        // validate password
+        validatePassword(authDto, user);
+
         // 토큰 생성
         AuthDto.TokenWithRefresh tokenDto = jwtProvider.generateToken(userId, user.getAuthorities());
 
@@ -42,6 +47,12 @@ public class AuthServiceImpl implements AuthService {
         userService.updateUserWithSignIn(userId, tokenDto.getRefreshToken());
 
         return tokenDto;
+    }
+
+    private void validatePassword(AuthDto.SignIn authDto, User user) {
+        if (!passwordEncoder.matches(authDto.getPassword(), user.getPassword())) {
+            throw new ApiException(ErrorMessage.INVALID_USER_ID_AND_PASSWORD);
+        }
     }
 
     @Override

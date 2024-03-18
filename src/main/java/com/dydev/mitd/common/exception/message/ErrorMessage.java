@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 @JsonFormat(shape = JsonFormat.Shape.OBJECT)
 public enum ErrorMessage implements ErrorMessageIF {
     // AUTH
+    INVALID_USER_ID_AND_PASSWORD(400, "Invalid ID and Password"),
     TOKEN_WITHOUT_CREDENTIAL(400, "Token Without Credential"),
     UNAUTHORIZED_USER(401, "Unauthorized User"),
     ACCESS_DENIED(403, "Access Denied"),
