@@ -121,6 +121,19 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
     @Override
     @Transactional
+    public String updateUserWithSignIn(User user, String refreshToken) {
+        // 최종 로그인 일시
+        user.updateLastLoginDateTime();
+
+        // refresh token 최신화
+        String userId = user.getUserId();
+        userTokenService.updateUserToken(userId, refreshToken);
+
+        return userId;
+    }
+
+    @Override
+    @Transactional
     public String updateUserWithSignIn(String userId, String refreshToken) {
         Optional<User> userOp = userRepository.findById(userId);
 

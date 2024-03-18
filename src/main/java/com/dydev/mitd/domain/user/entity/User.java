@@ -8,6 +8,7 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.*;
 import lombok.experimental.SuperBuilder;
+import org.hibernate.annotations.DynamicUpdate;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -28,6 +29,7 @@ import java.util.stream.Collectors;
         name = "tb_user",
         uniqueConstraints = @UniqueConstraint(name = "uk_user", columnNames = "email")
 )
+@DynamicUpdate
 public class User extends BaseCUEntity implements UserDetails {
 
     @Id

@@ -19,6 +19,8 @@ public interface UserService {
 
     String createUser(UserRequestDto userRequestDto);
 
+    String updateUserWithSignIn(User user, String refreshToken);
+
     String updateUserWithSignIn(String userId, String refreshToken);
 
     String updateUser(String userId, UserRequestDto.Update userRequestDto);

@@ -44,7 +44,7 @@ public class AuthServiceImpl implements AuthService {
         AuthDto.TokenWithRefresh tokenDto = jwtProvider.generateToken(userId, user.getAuthorities());
 
         // 사용자 정보 업데이트
-        userService.updateUserWithSignIn(userId, tokenDto.getRefreshToken());
+        userService.updateUserWithSignIn(user, tokenDto.getRefreshToken());
 
         return tokenDto;
     }
